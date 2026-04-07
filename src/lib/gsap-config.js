@@ -1,7 +1,9 @@
-import { gsap } from 'gsap';
+import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
-gsap.ticker.lagSmoothing(0);
+// SSR Guard: Only register plugin if in the browser
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export { gsap, ScrollTrigger };

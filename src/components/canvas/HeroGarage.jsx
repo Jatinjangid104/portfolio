@@ -1,15 +1,19 @@
 import { NEON_CYAN } from '@/lib/design-tokens';
 
+// Pre-allocate geometry arguments outside the render loop
+const BIKE_BOX_ARGS = Object.freeze([1.5, 1.0, 3.0]);
+
 export function HeroGarage() {
   return (
     <group>
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[1.5, 1.0, 3.0]} />
+      {/* Position origin is default, no prop needed */}
+      <mesh>
+        <boxGeometry args={BIKE_BOX_ARGS} />
         <meshStandardMaterial color={NEON_CYAN} wireframe={true} />
       </mesh>
       
-      <mesh position={[0, 0, 0]}>
-        <boxGeometry args={[1.5, 1.0, 3.0]} />
+      <mesh>
+        <boxGeometry args={BIKE_BOX_ARGS} />
         <meshStandardMaterial color={NEON_CYAN} transparent={true} opacity={0.04} />
       </mesh>
 

@@ -1,26 +1,28 @@
 import Lenis from 'lenis';
-import { gsap } from './gsap-config';
+import { gsap, ScrollTrigger } from './gsap-config';
+import { usePortfolioStore } from '@/store';
 
-const LERP = 0.1;
-const DURATION = 1.2;
-const SMOOTH_WHEEL = true;
+// SSR Guard: Only instantiate if in the browser
+export const lenis = typeof window !== 'undefined' ? new Lenis({
+  lerp: 0.1,
+  smoothWheel: true,
+}) : null;
 
-const lenis = new Lenis({
-  lerp: LERP,
-  duration: DURATION,
-  smoothWheel: SMOOTH_WHEEL,
-  autoRaf: false,
-});
+if (typeof window !== 'undefined') {
+  gsap.ticker.add((time) => {
+    lenis?.raf(time * 1000);
+  });
 
-const tickerCallback = (time) => {
-  lenis.raf(time * 1000);
+  gsap.ticker.lagSmoothing(0);
+  lenis.on('scroll', ScrollTrigger.update);
+  lenis.on('scroll', (e) => {
+    usePortfolioStore.getState().setScrollProgress(e.progress);
+  });
+}
+
+export const destroyLenis = () => {
+  if (lenis) {
+    lenis.destroy();
+    gsap.ticker.remove(lenis?.raf);
+  }
 };
-
-gsap.ticker.add(tickerCallback);
-
-const destroyLenis = () => {
-  gsap.ticker.remove(tickerCallback);
-  lenis.destroy();
-};
-
-export { lenis, destroyLenis };
